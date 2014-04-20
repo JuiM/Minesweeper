@@ -1,0 +1,88 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JFrame;
+
+
+public class View extends JFrame implements MouseListener{
+
+	int offset =23;
+	int scale = 20;
+	int width = 40;
+	int height = 40;
+	Minefield field;
+
+	public View() {
+		super("Minesweeper");
+		setSize(800,800 + offset);
+		field = new Minefield();
+		addMouseListener(this);
+
+		setVisible(true);
+	}
+	public void paint(Graphics g){
+		paintGrid(g);
+		paintPieces(g);
+	}
+	private void paintGrid(Graphics g) {
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(0, 0, width * scale, height*scale + offset);
+
+		g.setColor(Color.lightGray);
+		for(int x = 0; x < width ; x++){
+			for(int y = 0 ; y < height ; y++){
+
+				g.fillRect(x * scale + 1, offset + y * scale, scale - 2, scale - 2);
+			}
+		}
+	}
+
+	private void paintPieces(Graphics g){
+		g.setColor(Color.BLUE);
+		for(int x = 0; x < width ; x++){
+			for(int y = 0 ; y < height ; y++){
+				if(!field.isVisible(x,y)){
+					// do nothing
+				}
+				else if(field.isMine(x, y)){
+					// draw a mine
+					//g.setColor(Color.BLACK);
+				}
+				else if (field.isFlag(x,y)) {
+					//g.fillPol
+				}
+				else if(field.getSquare(x, y) > 0) {
+					switch(field.getSquare(x, y)){
+					case 1: g.setColor(Color.blue);
+					break;
+					case 2: g.setColor(Color.green);
+					break;
+					case 3: g.setColor(Color.red);
+					break;
+					case 4: g.setColor(Color.magenta);
+					break;
+					case 5: g.setColor(Color.cyan);
+					}
+					g.drawString("" + field.getSquare(x, y), x * scale + 6, y * scale + offset +14);
+				}
+				else {
+					g.setColor(Color.gray);
+					g.fillRect(x*scale +1, y* scale + offset +1, 18, 18);
+				}
+			}	
+		}
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		field.clicked(e.getX() / scale, (e.getY()-20) / scale);
+		// this method calls the paint method with the Graphics object
+		repaint();
+	}
+	// don't need these methods
+	public void mouseEntered(MouseEvent arg0) {}
+	public void mouseExited(MouseEvent arg0) {}
+	public void mousePressed(MouseEvent arg0) {}
+	public void mouseReleased(MouseEvent arg0){}
+}	
